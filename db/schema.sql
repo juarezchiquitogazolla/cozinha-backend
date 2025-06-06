@@ -35,3 +35,4 @@ CREATE TABLE public.votacao_tb (
 	CONSTRAINT votacao_tb_prato_fk FOREIGN KEY (id_prato) REFERENCES prato_tb(id_prato),
 	-- Um IP só pode votar uma vez por prato:
 	CONSTRAINT votacao_tb_unico_ip_prato UNIQUE (ip_usuario, id_prato)
+);
