@@ -99,16 +99,21 @@ app.get('/pratos', async (req: Request, res: Response) => {
 
 // Middleware para autenticar token JWT
 function autenticaToken(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-  if (!token) return res.status(401).json({ error: 'Token não fornecido' })
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Token não fornecido' });
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Token inválido' })
-    (req as any).user = user
-    next()
-  })
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(400).json({ error: 'Token inválido' });
+
+    // Tipagem explícita (supondo seu payload)
+    const user = decoded as { id_usuario: number; email: string };
+
+    (req as any).user = user;
+    next();
+  });
 }
+
 
 // --- SIGNUP ---
 app.post('/signup', async (req: Request, res: Response) => {
